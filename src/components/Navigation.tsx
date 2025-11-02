@@ -3,6 +3,7 @@ import { Volume2, VolumeX, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+import turiyaLogo from "@/assets/turiya-logo.png";
 
 interface NavigationProps {
   ambientEnabled: boolean;
@@ -28,9 +29,13 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
           {/* Logo */}
           <Link 
             to="/stillness" 
-            className="text-lg font-light tracking-wide text-foreground hover:text-primary transition-colors"
+            className="flex items-center hover:opacity-80 transition-opacity"
           >
-            Turiya Project
+            <img 
+              src={turiyaLogo} 
+              alt="Turiya Project" 
+              className="h-10 w-auto"
+            />
           </Link>
           
           {/* Desktop Navigation - Right aligned */}
