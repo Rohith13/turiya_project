@@ -21,8 +21,13 @@ const PageLayout = ({ children, gradient = "calm", tagline }: PageLayoutProps) =
         </footer>
       )}
       
-      <footer className="text-xs text-muted-foreground/60 text-center mt-4 font-light tracking-wide">
-        The Mindful Park — Digital Sanctuaries for the Modern Mind
+      <footer className="w-full flex items-center justify-center gap-8 text-xs text-muted-foreground/60 mt-4 font-light tracking-wide px-4">
+        <span className="text-center flex-1">
+          Turiya Project — Digital Sanctuaries for the Modern Mind
+        </span>
+        <span className="text-right whitespace-nowrap">
+          © 2025 Turiya Project. All rights reserved by Revora Labs.
+        </span>
       </footer>
     </div>
   );

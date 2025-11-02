@@ -25,7 +25,7 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
           to="/stillness" 
           className="text-lg font-light tracking-wide text-foreground hover:text-primary transition-colors"
         >
-          The Stillpoint Project
+          Turiya Project
         </Link>
         
         <div className="flex items-center gap-6">
