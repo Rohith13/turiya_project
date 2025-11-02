@@ -31,7 +31,7 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
             to="/stillness" 
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <img src={turiyaLogo} alt="Turiya Project" className="h-10 w-auto" />
+            <img src={turiyaLogo} alt="Turiya Project" className="h-14 md:h-16 w-auto" />
             <span className="text-lg font-light tracking-wide text-foreground">
               Turiya Project
             </span>
