@@ -21,11 +21,11 @@ const PageLayout = ({ children, gradient = "calm", tagline }: PageLayoutProps) =
         </footer>
       )}
       
-      <footer className="w-full flex items-center justify-between gap-8 text-xs text-muted-foreground/60 mt-4 font-light tracking-wide px-4">
-        <span className="text-left whitespace-nowrap">
+      <footer className="w-full flex flex-col md:flex-row items-center justify-center md:justify-between gap-2 md:gap-8 text-xs text-muted-foreground/60 mt-4 font-light tracking-wide px-4">
+        <span className="text-center md:text-left order-2 md:order-1">
           © 2025 Turiya Project. All rights reserved by Revora Labs.
         </span>
-        <span className="text-right">
+        <span className="text-center md:text-right order-1 md:order-2">
           Turiya Project — Digital Sanctuaries for the Modern Mind
         </span>
       </footer>
