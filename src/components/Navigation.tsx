@@ -34,7 +34,7 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
             <img 
               src={turiyaLogo} 
               alt="Turiya Project" 
-              className="h-10 w-auto"
+              className="h-16 md:h-20 w-auto"
             />
           </Link>
           
