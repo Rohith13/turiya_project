@@ -22,15 +22,15 @@ const Beads = () => {
   const playBellSound = async () => {
     await Tone.start();
     const bell = new Tone.MetalSynth({
-      envelope: { decay: 1.4, release: 3 },
-      harmonicity: 12,
-      modulationIndex: 20,
-      resonance: 800,
-      octaves: 1.5,
+      envelope: { attack: 0.01, decay: 2.5, release: 5 },
+      harmonicity: 5.1,
+      modulationIndex: 12,
+      resonance: 400,
+      octaves: 1,
     }).toDestination();
     
-    bell.volume.value = -10;
-    bell.triggerAttackRelease("C5", "4n");
+    bell.volume.value = -15;
+    bell.triggerAttackRelease("G4", "2n");
   };
 
   const handleBeadClick = () => {

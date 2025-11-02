@@ -77,8 +77,9 @@ export default {
           to: { opacity: "1", transform: "translateY(0)" },
         },
         "breathe": {
-          "0%, 100%": { transform: "scale(0.8)", opacity: "0.6" },
-          "50%": { transform: "scale(1.2)", opacity: "1" },
+          "0%": { transform: "scale(0.8)", opacity: "0.2" },
+          "50%": { transform: "scale(1)", opacity: "0.7" },
+          "100%": { transform: "scale(0.8)", opacity: "0.2" },
         },
         "pulse-glow": {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" },

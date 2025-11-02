@@ -10,7 +10,7 @@ import Stillness from "./pages/Stillness";
 import Beads from "./pages/Beads";
 import Breath from "./pages/Breath";
 import Bell from "./pages/Bell";
-import Geometry from "./pages/Geometry";
+import Affirmations from "@/pages/Affirmations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,7 +35,7 @@ const App = () => {
             <Route path="/beads" element={<Beads />} />
             <Route path="/breath" element={<Breath />} />
             <Route path="/bell" element={<Bell />} />
-            <Route path="/geometry" element={<Geometry />} />
+            <Route path="/affirmations" element={<Affirmations />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

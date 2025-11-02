@@ -2,51 +2,68 @@ import { useEffect, useRef } from "react";
 import * as Tone from "tone";
 
 export const useAmbientSound = (enabled: boolean) => {
-  const synthRef = useRef<Tone.PolySynth | null>(null);
+  const noiseRef = useRef<Tone.Noise | null>(null);
+  const filterRef = useRef<Tone.Filter | null>(null);
+  const reverbRef = useRef<Tone.Reverb | null>(null);
+  const synthRef = useRef<Tone.Synth | null>(null);
   const loopRef = useRef<Tone.Loop | null>(null);
 
   useEffect(() => {
     const setupAmbient = async () => {
-      if (enabled && !synthRef.current) {
+      if (enabled && !noiseRef.current) {
         await Tone.start();
         
-        // Create a soft ambient synth
-        const synth = new Tone.PolySynth(Tone.Synth, {
+        // Create ambient layers
+        const reverb = new Tone.Reverb({ decay: 8, wet: 0.5 }).toDestination();
+        const filter = new Tone.Filter(300, "lowpass").connect(reverb);
+        
+        // Soft noise (wind-like)
+        const noise = new Tone.Noise("pink");
+        noise.volume.value = -35;
+        noise.connect(filter);
+        noise.start();
+        
+        // Deep meditation drone
+        const synth = new Tone.Synth({
           oscillator: { type: "sine" },
           envelope: {
-            attack: 4,
-            decay: 2,
-            sustain: 0.4,
+            attack: 8,
+            decay: 0,
+            sustain: 1,
             release: 8,
           },
-        }).toDestination();
+        }).connect(reverb);
         
-        synth.volume.value = -20; // Soft background volume
+        synth.volume.value = -28;
         
-        // Ambient chord progression
-        const notes = [
-          ["C4", "E4", "G4"],
-          ["A3", "C4", "E4"],
-          ["F3", "A3", "C4"],
-          ["G3", "B3", "D4"],
-        ];
-        
+        // Slow evolving pad
+        const notes = ["C2", "G2", "C3", "E3"];
         let noteIndex = 0;
         
         const loop = new Tone.Loop((time) => {
-          synth.triggerAttackRelease(notes[noteIndex % notes.length], "8n", time);
+          synth.triggerAttackRelease(notes[noteIndex % notes.length], "16n", time);
           noteIndex++;
-        }, "8m"); // Very slow, 8 measures between notes
+        }, "16m");
         
         loop.start(0);
         Tone.Transport.start();
         
+        noiseRef.current = noise;
+        filterRef.current = filter;
+        reverbRef.current = reverb;
         synthRef.current = synth;
         loopRef.current = loop;
-      } else if (!enabled && synthRef.current) {
+      } else if (!enabled && noiseRef.current) {
         loopRef.current?.stop();
-        synthRef.current.dispose();
+        noiseRef.current?.stop();
+        noiseRef.current?.dispose();
+        filterRef.current?.dispose();
+        reverbRef.current?.dispose();
+        synthRef.current?.dispose();
         Tone.Transport.stop();
+        noiseRef.current = null;
+        filterRef.current = null;
+        reverbRef.current = null;
         synthRef.current = null;
         loopRef.current = null;
       }
@@ -55,9 +72,13 @@ export const useAmbientSound = (enabled: boolean) => {
     setupAmbient();
 
     return () => {
-      if (synthRef.current) {
+      if (noiseRef.current) {
         loopRef.current?.stop();
-        synthRef.current.dispose();
+        noiseRef.current?.stop();
+        noiseRef.current?.dispose();
+        filterRef.current?.dispose();
+        reverbRef.current?.dispose();
+        synthRef.current?.dispose();
         Tone.Transport.stop();
       }
     };

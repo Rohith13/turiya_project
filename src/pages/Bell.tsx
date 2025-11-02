@@ -21,15 +21,15 @@ const Bell = () => {
   const playBell = useCallback(async () => {
     await Tone.start();
     const bell = new Tone.MetalSynth({
-      envelope: { decay: 1.8, release: 4 },
-      harmonicity: 10,
-      modulationIndex: 25,
-      resonance: 1000,
-      octaves: 1.5,
+      envelope: { attack: 0.01, decay: 2.5, release: 5 },
+      harmonicity: 5.1,
+      modulationIndex: 12,
+      resonance: 400,
+      octaves: 1,
     }).toDestination();
     
-    bell.volume.value = -8;
-    bell.triggerAttackRelease("C5", "2n");
+    bell.volume.value = -12;
+    bell.triggerAttackRelease("G4", "2n");
     
     // Vibration
     if (navigator.vibrate) {
