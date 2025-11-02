@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 type Mood = "calm" | "focus" | "energy";
 
@@ -32,26 +31,9 @@ const moodSettings = {
 
 const Breath = () => {
   const [mood, setMood] = useState<Mood>("calm");
-  const [customDuration, setCustomDuration] = useState<number | null>(null);
-  const [feelingInput, setFeelingInput] = useState("");
   
   const setting = moodSettings[mood];
-  const duration = customDuration || setting.duration;
-
-  const handleFeelingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple emotion-to-duration mapping
-    const feeling = feelingInput.toLowerCase();
-    if (feeling.includes("anxious") || feeling.includes("stressed")) {
-      setCustomDuration(8);
-    } else if (feeling.includes("tired") || feeling.includes("sleepy")) {
-      setCustomDuration(10);
-    } else if (feeling.includes("energetic") || feeling.includes("excited")) {
-      setCustomDuration(4);
-    } else {
-      setCustomDuration(6);
-    }
-  };
+  const duration = setting.duration;
 
   return (
     <PageLayout gradient={setting.gradient} tagline="Breathe in light, breathe out peace.">
@@ -61,10 +43,7 @@ const Breath = () => {
           {(Object.keys(moodSettings) as Mood[]).map((m) => (
             <Button
               key={m}
-              onClick={() => {
-                setMood(m);
-                setCustomDuration(null);
-              }}
+              onClick={() => setMood(m)}
               variant={mood === m ? "default" : "outline"}
               size="lg"
               className="min-w-[100px] transition-all duration-300"
@@ -138,26 +117,6 @@ const Breath = () => {
             {duration} second cycle • {Math.round(60 / duration)} breaths per minute
           </p>
         </div>
-
-        {/* Optional "How do you feel?" input */}
-        <form onSubmit={handleFeelingSubmit} className="flex flex-col items-center gap-3 w-full max-w-sm">
-          <label htmlFor="feeling" className="text-sm text-muted-foreground font-light">
-            How do you feel? (optional)
-          </label>
-          <div className="flex gap-2 w-full">
-            <Input
-              id="feeling"
-              type="text"
-              placeholder="e.g., anxious, calm, tired..."
-              value={feelingInput}
-              onChange={(e) => setFeelingInput(e.target.value)}
-              className="flex-1 bg-background/50 backdrop-blur-sm border-border/50"
-            />
-            <Button type="submit" variant="outline">
-              Adjust
-            </Button>
-          </div>
-        </form>
       </div>
     </PageLayout>
   );
