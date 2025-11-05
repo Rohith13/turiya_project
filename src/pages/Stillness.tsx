@@ -14,6 +14,18 @@ const koans = [
   "The present moment is the only moment available to us.",
   "You are the sky. Everything else is just the weather.",
   "Be still and know.",
+  "To study the self is to forget the self.",
+  "The tighter you squeeze, the less you have.",
+  "Not knowing is most intimate.",
+  "The way out is through.",
+  "Show me your face before your parents were born.",
+  "A finger pointing at the moon is not the moon.",
+  "In the beginner's mind there are many possibilities, in the expert's mind there are few.",
+  "No snowflake ever falls in the wrong place.",
+  "The quieter you become, the more you can hear.",
+  "Sitting quietly, doing nothing, spring comes and the grass grows by itself.",
+  "When you realize nothing is lacking, the whole world belongs to you.",
+  "The way is not in the sky; the way is in the heart.",
 ];
 
 const Stillness = () => {
