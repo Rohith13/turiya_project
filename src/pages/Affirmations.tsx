@@ -57,28 +57,11 @@ const Affirmations = () => {
     generateNewAffirmation(savedTone || "peace");
   }, []);
 
-  const playChime = async () => {
-    await Tone.start();
-    const synth = new Tone.Synth({
-      oscillator: { type: "sine" },
-      envelope: {
-        attack: 0.05,
-        decay: 0.8,
-        sustain: 0.3,
-        release: 2,
-      },
-    }).toDestination();
-
-    synth.volume.value = -18;
-    synth.triggerAttackRelease("C5", "4n");
-    
-    setTimeout(() => {
-      synth.triggerAttackRelease("E5", "4n");
-    }, 200);
-    
-    setTimeout(() => {
-      synth.triggerAttackRelease("G5", "8n");
-    }, 400);
+  const playGentleHaptic = () => {
+    // Gentle haptic feedback - soft, brief vibration
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50); // 50ms gentle pulse
+    }
   };
 
   const generateNewAffirmation = (tone: Tone) => {
@@ -88,7 +71,7 @@ const Affirmations = () => {
       const randomAffirmation = list[Math.floor(Math.random() * list.length)];
       setCurrentAffirmation(randomAffirmation);
       setIsVisible(true);
-      playChime();
+      playGentleHaptic();
     }, 300);
   };
 
