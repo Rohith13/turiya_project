@@ -11,13 +11,13 @@ const PageLayout = ({ children, gradient = "calm", tagline }: PageLayoutProps) =
 
   return (
     <div
-      className={`min-h-screen ${gradientClass} flex flex-col items-center justify-center p-8 pt-24 animate-fade-in`}
+      className={`min-h-screen ${gradientClass} flex flex-col items-center p-8 pt-28 animate-fade-in`}
     >
-      <p className="text-sm md:text-base font-light tracking-wide text-muted-foreground/60 text-center mb-8 animate-fade-in">
+      <p className="text-sm md:text-base font-light tracking-wide text-muted-foreground/60 text-center mt-4 mb-12 animate-fade-in">
         Turiya — Pure Consciousness
       </p>
       
-      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl">{children}</main>
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl -mt-8">{children}</main>
 
       {tagline && <footer className="text-xs text-muted-foreground/70 text-center mt-8 font-light">{tagline}</footer>}
 
