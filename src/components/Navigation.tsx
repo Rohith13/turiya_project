@@ -32,14 +32,9 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <img src={turiyaLogo} alt="Turiya Project" className="h-14 md:h-16 w-auto" />
-            <div className="flex flex-col">
-              <span className="text-lg font-light tracking-wide text-foreground">
-                Turiya Project
-              </span>
-              <span className="text-xs font-light tracking-wide text-muted-foreground/70 mt-0.5">
-                Turiya — Pure Consciousness
-              </span>
-            </div>
+            <span className="text-lg font-light tracking-wide text-foreground">
+              Turiya Project
+            </span>
           </Link>
           
           {/* Desktop Navigation - Right aligned */}
