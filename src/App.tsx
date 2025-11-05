@@ -11,6 +11,7 @@ import Beads from "./pages/Beads";
 import Breath from "./pages/Breath";
 import Bell from "./pages/Bell";
 import Affirmations from "@/pages/Affirmations";
+import Support from "@/pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => {
             <Route path="/breath" element={<Breath />} />
             <Route path="/bell" element={<Bell />} />
             <Route path="/affirmations" element={<Affirmations />} />
+            <Route path="/support" element={<Support />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
