@@ -35,7 +35,7 @@ const PageLayout = ({ children, gradient = "calm", tagline }: PageLayoutProps) =
           .
         </span>
         <span className="text-center md:text-right order-1 md:order-2">
-          Turiya Project — Digital Sanctuary for the Modern Mind
+          Digital Sanctuary for the Modern Mind
         </span>
       </footer>
     </div>
