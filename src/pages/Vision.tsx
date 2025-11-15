@@ -87,21 +87,12 @@ const Vision = () => {
   return (
     <PageLayout tagline="Gentle exercises for eye focus and clarity">
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
-        {/* 20-20-20 Rule */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-center text-xs md:text-sm text-muted-foreground italic my-8 max-w-2xl"
-        >
-          Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
-        </motion.p>
-
-        {/* Module Selector Buttons - Below Header */}
+        {/* Module Selector Buttons */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12"
+          transition={{ delay: 0.2 }}
+          className="flex flex-wrap justify-center gap-4 md:gap-6 mb-16"
         >
           <button
             onClick={() => resetModule("nearfar")}
