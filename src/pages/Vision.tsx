@@ -17,7 +17,7 @@ const Vision = () => {
   useEffect(() => {
     if (activeModule === "nearfar") {
       const interval = setInterval(() => {
-        setFocusPoint(prev => prev === "near" ? "far" : "near");
+        setFocusPoint((prev) => (prev === "near" ? "far" : "near"));
       }, 3000);
       return () => clearInterval(interval);
     }
@@ -26,7 +26,7 @@ const Vision = () => {
   // Palming timer countdown
   useEffect(() => {
     if (activeModule === "palming" && palmingTimer > 0) {
-      const timer = setTimeout(() => setPalmingTimer(prev => prev - 1), 1000);
+      const timer = setTimeout(() => setPalmingTimer((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
     }
   }, [activeModule, palmingTimer]);
@@ -35,7 +35,7 @@ const Vision = () => {
   useEffect(() => {
     if (activeModule === "blink" && blinkCount < 10) {
       const interval = setInterval(() => {
-        setBlinkCount(prev => prev + 1);
+        setBlinkCount((prev) => prev + 1);
       }, 2000);
       return () => clearInterval(interval);
     } else if (blinkCount === 10 && !showCircle) {
@@ -48,7 +48,7 @@ const Vision = () => {
     if (showCircle) {
       setRotationCount(1);
       const interval = setInterval(() => {
-        setCircleDirection(prev => {
+        setCircleDirection((prev) => {
           const newDirection = prev === "clockwise" ? "anticlockwise" : "clockwise";
           setRotationCount(1);
           return newDirection;
@@ -62,7 +62,7 @@ const Vision = () => {
   useEffect(() => {
     if (showCircle) {
       const interval = setInterval(() => {
-        setRotationCount(prev => {
+        setRotationCount((prev) => {
           if (circleDirection === "clockwise") {
             return prev < 5 ? prev + 1 : 1;
           } else {
@@ -125,21 +125,16 @@ const Vision = () => {
           </button>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-4xl"
-        >
-
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl">
           {/* Near-Far Focus Module */}
           {activeModule === "nearfar" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto">
-                Focus on the near point… then gently shift to the far point… breathe naturally.
+                Do this offline. Look at your thumb (20–30 cm away), then look at a distant object.
+                <br />
+                Slowly shift your focus back and forth for 10–15 seconds.
+                <br />
+                Else on screen, focus on the near point and then gently shift to the far point… breathe naturally.
               </p>
               <div className="relative h-64 md:h-96 flex items-center justify-center">
                 {/* Near Dot */}
@@ -184,10 +179,8 @@ const Vision = () => {
                   className="absolute w-6 h-6 md:w-8 md:h-8 rounded-full bg-secondary"
                 />
               </div>
-              <p className="text-base md:text-lg text-foreground capitalize mt-8">
-                {focusPoint}
-              </p>
-              
+              <p className="text-base md:text-lg text-foreground capitalize mt-8">{focusPoint}</p>
+
               {/* 20-20-20 Rule */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -204,13 +197,10 @@ const Vision = () => {
 
           {/* Palming Warmth Module */}
           {activeModule === "palming" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
-                Rub your palms until warm and gently cup them over your closed eyes.<br />
+                Rub your palms until warm and gently cup them over your closed eyes.
+                <br />
                 Stay here for a few breaths.
               </p>
               <div className="relative h-64 md:h-96 flex items-center justify-center">
@@ -255,11 +245,7 @@ const Vision = () => {
                 )}
               </AnimatePresence>
               {palmingTimer === 0 && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-muted-foreground mt-8"
-                >
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-muted-foreground mt-8">
                   Complete ✨
                 </motion.p>
               )}
@@ -280,16 +266,14 @@ const Vision = () => {
 
           {/* Blink & Refresh Module */}
           {activeModule === "blink" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
               {!showCircle ? (
                 <>
                   <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
-                    Blink slowly 10 times.<br />
-                    Keep your shoulders relaxed.<br />
+                    Blink slowly 10 times.
+                    <br />
+                    Keep your shoulders relaxed.
+                    <br />
                     Breathe softly as you blink.
                   </p>
                   <div className="relative h-64 md:h-96 flex items-center justify-center">
@@ -312,14 +296,13 @@ const Vision = () => {
                       />
                     </div>
                   </div>
-                  <p className="text-xl md:text-2xl text-foreground mt-8">
-                    {blinkCount} / 10
-                  </p>
+                  <p className="text-xl md:text-2xl text-foreground mt-8">{blinkCount} / 10</p>
                 </>
               ) : (
                 <>
                   <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
-                    Now let your gaze travel in a gentle circular motion.<br />
+                    Now let your gaze travel in a gentle circular motion.
+                    <br />
                     Slow, smooth, and calm.
                   </p>
                   <div className="relative h-64 md:h-96 flex items-center justify-center">
@@ -337,7 +320,7 @@ const Vision = () => {
                       className="absolute w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-primary/40 to-secondary/40"
                       style={{ filter: "blur(20px)" }}
                     />
-                    
+
                     {/* Rotating ring */}
                     <motion.div
                       animate={{
@@ -364,12 +347,8 @@ const Vision = () => {
                       </svg>
                     </motion.div>
                   </div>
-                  <p className="text-2xl md:text-3xl text-foreground mt-8">
-                    {rotationCount}
-                  </p>
-                  <p className="text-xs md:text-sm text-muted-foreground mt-2 capitalize">
-                    {circleDirection}
-                  </p>
+                  <p className="text-2xl md:text-3xl text-foreground mt-8">{rotationCount}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-2 capitalize">{circleDirection}</p>
                 </>
               )}
 
