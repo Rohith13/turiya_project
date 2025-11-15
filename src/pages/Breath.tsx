@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 
-type Mood = "calm" | "focus" | "energy" | "prana";
+type Mood = "calm" | "focus" | "prana";
 
 const moodSettings = {
   calm: {
@@ -20,14 +20,6 @@ const moodSettings = {
     gradient: "focus" as const,
     color: "35 70% 65%",
     glowColor: "35 85% 80%",
-    type: "orb" as const,
-  },
-  energy: {
-    duration: 4,
-    label: "Energy",
-    gradient: "energy" as const,
-    color: "45 85% 60%",
-    glowColor: "45 95% 75%",
     type: "orb" as const,
   },
   prana: {
