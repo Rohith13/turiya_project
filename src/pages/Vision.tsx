@@ -92,7 +92,7 @@ const Vision = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-center text-xs md:text-sm text-muted-foreground italic mb-6 mt-0 max-w-2xl"
+          className="text-center text-xs md:text-sm text-muted-foreground italic my-8 max-w-2xl"
         >
           Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
         </motion.p>
