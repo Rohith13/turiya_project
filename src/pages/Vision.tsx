@@ -86,7 +86,7 @@ const Vision = () => {
 
   return (
     <PageLayout tagline="Gentle exercises for eye focus and clarity">
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Module Selector Buttons */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
