@@ -87,11 +87,21 @@ const Vision = () => {
   return (
     <PageLayout tagline="Gentle exercises for eye focus and clarity">
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
+        {/* 20-20-20 Rule */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-center text-xs md:text-sm text-muted-foreground italic mb-8 mt-8 max-w-2xl"
+        >
+          Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
+        </motion.p>
+
         {/* Module Selector Buttons - Below Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12 mt-8"
+          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12"
         >
           <button
             onClick={() => resetModule("nearfar")}
@@ -180,18 +190,6 @@ const Vision = () => {
                 />
               </div>
               <p className="text-base md:text-lg text-foreground capitalize mt-8">{focusPoint}</p>
-
-              {/* 20-20-20 Rule */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
-              >
-                <p className="text-center text-xs md:text-sm text-muted-foreground italic">
-                  Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
-                </p>
-              </motion.div>
             </motion.div>
           )}
 
@@ -249,18 +247,6 @@ const Vision = () => {
                   Complete ✨
                 </motion.p>
               )}
-
-              {/* 20-20-20 Rule */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
-              >
-                <p className="text-center text-xs md:text-sm text-muted-foreground italic">
-                  Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
-                </p>
-              </motion.div>
             </motion.div>
           )}
 
@@ -351,18 +337,6 @@ const Vision = () => {
                   <p className="text-xs md:text-sm text-muted-foreground mt-2 capitalize">{circleDirection}</p>
                 </>
               )}
-
-              {/* 20-20-20 Rule */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
-              >
-                <p className="text-center text-xs md:text-sm text-muted-foreground italic">
-                  Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
-                </p>
-              </motion.div>
             </motion.div>
           )}
         </motion.div>
