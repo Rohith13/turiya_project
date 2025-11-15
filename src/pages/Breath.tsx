@@ -31,16 +31,19 @@ const moodSettings = {
     type: "orb" as const,
   },
   prana: {
-    duration: 12,
+    duration: 33,
     label: "Prana",
     gradient: "focus" as const,
     color: "180 50% 65%",
     glowColor: "180 70% 80%",
     type: "wave" as const,
     phases: {
-      inhale: 4,
-      hold: 4,
-      exhale: 4,
+      inhale: 5,
+      gap1: 1,
+      hold: 15,
+      gap2: 1,
+      exhale: 10,
+      gap3: 1,
     },
   },
 };
@@ -49,67 +52,87 @@ const Breath = () => {
   const [mood, setMood] = useState<Mood>("calm");
   const [timer, setTimer] = useState(0);
   const [phase, setPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const [displayNumber, setDisplayNumber] = useState<number | null>(1);
   
   const setting = moodSettings[mood];
   const duration = setting.duration;
 
-  // Timer logic for all modes
+  // Timer logic for all modes - 1 second intervals
   useEffect(() => {
     setTimer(0);
     setPhase("inhale");
+    setDisplayNumber(1);
     
     const interval = setInterval(() => {
       setTimer((prev) => {
+        const nextTime = prev + 1;
+        
         if (setting.type === "wave") {
-          const { inhale, hold, exhale } = setting.phases;
-          const totalCycle = inhale + hold + exhale;
-          const nextTime = (prev + 0.1) % totalCycle;
+          // Prana mode with gaps
+          const cycleTime = 33; // 5 inhale + 1 gap + 15 hold + 1 gap + 10 exhale + 1 gap
+          const currentTime = nextTime % cycleTime;
           
-          if (nextTime < inhale) {
+          if (currentTime < 5) {
             setPhase("inhale");
-          } else if (nextTime < inhale + hold) {
+            setDisplayNumber(currentTime + 1);
+          } else if (currentTime === 5) {
+            setPhase("inhale");
+            setDisplayNumber(null);
+          } else if (currentTime < 21) {
             setPhase("hold");
+            if (currentTime === 6) {
+              setDisplayNumber(null);
+            } else {
+              setDisplayNumber(currentTime - 6 + 1);
+            }
+          } else if (currentTime === 21) {
+            setPhase("hold");
+            setDisplayNumber(null);
+          } else if (currentTime < 32) {
+            setPhase("exhale");
+            if (currentTime === 22) {
+              setDisplayNumber(null);
+            } else {
+              setDisplayNumber(32 - currentTime);
+            }
           } else {
             setPhase("exhale");
+            setDisplayNumber(null);
           }
           
           return nextTime;
         } else {
-          // For orb modes (calm, focus, energy)
-          const nextTime = (prev + 0.1) % duration;
-          if (nextTime < duration / 2) {
+          // For orb modes (calm, focus, energy) with gaps
+          const halfDuration = duration / 2;
+          const cycleTime = duration + 2; // inhale + gap + exhale + gap
+          const currentTime = nextTime % cycleTime;
+          
+          if (currentTime < halfDuration) {
             setPhase("inhale");
+            setDisplayNumber(currentTime + 1);
+          } else if (currentTime === halfDuration) {
+            setPhase("inhale");
+            setDisplayNumber(null);
+          } else if (currentTime < duration + 1) {
+            setPhase("exhale");
+            if (currentTime === halfDuration + 1) {
+              setDisplayNumber(null);
+            } else {
+              setDisplayNumber(duration + 1 - currentTime);
+            }
           } else {
             setPhase("exhale");
+            setDisplayNumber(null);
           }
+          
           return nextTime;
         }
       });
-    }, 100);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [mood, duration, setting]);
 
-  const getDisplayTimer = () => {
-    if (setting.type === "wave") {
-      const { inhale, hold, exhale } = setting.phases;
-      if (phase === "inhale") {
-        return Math.ceil(inhale - timer);
-      } else if (phase === "hold") {
-        return Math.ceil(inhale + hold - timer);
-      } else {
-        return Math.ceil(inhale + hold + exhale - timer);
-      }
-    } else {
-      // For orb modes, show ascending during inhale, descending during exhale
-      const halfDuration = duration / 2;
-      if (phase === "inhale") {
-        return Math.ceil(timer) + 1;
-      } else {
-        return Math.ceil(duration - timer);
-      }
-    }
-  };
 
   return (
     <PageLayout gradient={setting.gradient} tagline="Breathe in light, breathe out peace.">
@@ -176,9 +199,12 @@ const Breath = () => {
                 }}
               />
               
-              <div className="text-center z-10">
+              <div className="text-center z-10 space-y-1">
                 <p className="text-6xl font-light text-foreground/90">
-                  {getDisplayTimer()}
+                  {displayNumber || ""}
+                </p>
+                <p className="text-sm text-foreground/70 font-light capitalize">
+                  {displayNumber !== null && phase}
                 </p>
               </div>
             </div>
@@ -223,8 +249,8 @@ const Breath = () => {
                     opacity: [0.6, 1, 0.6],
                   }}
                   transition={{
-                    duration: phase === "inhale" ? setting.phases.inhale : phase === "hold" ? setting.phases.hold : setting.phases.exhale,
-                    ease: "easeInOut",
+                    duration: phase === "inhale" ? 5 : phase === "hold" ? 15 : 10,
+                    ease: "linear",
                   }}
                 />
               </svg>
@@ -232,10 +258,10 @@ const Breath = () => {
               {/* Center content */}
               <div className="text-center z-10 space-y-2">
                 <p className="text-5xl font-light text-foreground/90">
-                  {getDisplayTimer()}
+                  {displayNumber || ""}
                 </p>
                 <p className="text-sm text-foreground/70 font-light capitalize">
-                  {phase}
+                  {displayNumber !== null && phase}
                 </p>
               </div>
             </div>
@@ -243,10 +269,10 @@ const Breath = () => {
             {/* Instructions */}
             <div className="text-center space-y-2 max-w-md">
               <p className="text-sm text-muted-foreground font-light">
-                {setting.phases.inhale}s Inhale • {setting.phases.hold}s Hold • {setting.phases.exhale}s Exhale
+                5s Inhale • 15s Hold • 10s Exhale
               </p>
               <p className="text-xs text-muted-foreground/70 font-light mt-4">
-                Box breathing for lung capacity and calm
+                Breath retention for lung capacity and calm
               </p>
             </div>
           </>
