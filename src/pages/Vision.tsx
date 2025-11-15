@@ -130,11 +130,11 @@ const Vision = () => {
           {activeModule === "nearfar" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto">
-                Do this offline. Look at your thumb (20–30 cm away), then look at a distant object.
+                Look at your thumb (20–30 cm away), then look at a distant object.
                 <br />
-                Slowly shift your focus back and forth for 10–15 seconds.
+                Perform this back and forth for 10–15 seconds.
                 <br />
-                Else on screen, focus on the near point and then gently shift to the far point… breathe naturally.
+                Else, focus on the near point and then gently shift to the far point… breathe naturally.
               </p>
               <div className="relative h-64 md:h-96 flex items-center justify-center">
                 {/* Near Dot */}
