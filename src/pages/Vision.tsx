@@ -142,9 +142,8 @@ const Vision = () => {
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto">
                 Look at your thumb (20–30 cm away), then look at a distant object.
                 <br />
-                Perform this back and forth for 10–15 seconds.
+                Perform this back and forth for 10–15 seconds while breathing naturally.
                 <br />
-                Else, focus on the near point and then gently shift to the far point… breathe naturally.
               </p>
               <div className="relative h-64 md:h-96 flex items-center justify-center">
                 {/* Near Dot */}
