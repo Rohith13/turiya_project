@@ -9,6 +9,7 @@ import { useAmbientSound } from "@/hooks/useAmbientSound";
 import Stillness from "./pages/Stillness";
 import Beads from "./pages/Beads";
 import Breath from "./pages/Breath";
+import Vision from "./pages/Vision";
 import Bell from "./pages/Bell";
 import Affirmations from "@/pages/Affirmations";
 import Support from "@/pages/Support";
@@ -35,6 +36,7 @@ const App = () => {
             <Route path="/stillness" element={<Stillness />} />
             <Route path="/beads" element={<Beads />} />
             <Route path="/breath" element={<Breath />} />
+            <Route path="/vision" element={<Vision />} />
             <Route path="/bell" element={<Bell />} />
             <Route path="/affirmations" element={<Affirmations />} />
             <Route path="/support" element={<Support />} />
