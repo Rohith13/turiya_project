@@ -19,8 +19,8 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
     { path: "/beads", label: "Beads" },
     { path: "/breath", label: "Breath" },
     { path: "/bell", label: "Bell" },
-    { path: "/affirmations", label: "Affirmations" },
-    { path: "/support", label: "Support the Calm" },
+    { path: "/affirmations", label: "Self-Talk" },
+    { path: "/support", label: "Support Us" },
   ];
 
   return (
