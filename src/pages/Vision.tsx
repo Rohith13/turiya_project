@@ -11,6 +11,7 @@ const Vision = () => {
   const [blinkCount, setBlinkCount] = useState(0);
   const [showCircle, setShowCircle] = useState(false);
   const [circleDirection, setCircleDirection] = useState<"clockwise" | "anticlockwise">("clockwise");
+  const [rotationCount, setRotationCount] = useState(1);
 
   // Near-Far Focus toggle
   useEffect(() => {
@@ -42,15 +43,36 @@ const Vision = () => {
     }
   }, [activeModule, blinkCount, showCircle]);
 
-  // Circle rotation direction toggle
+  // Circle rotation direction toggle and counter
   useEffect(() => {
     if (showCircle) {
+      setRotationCount(1);
       const interval = setInterval(() => {
-        setCircleDirection(prev => prev === "clockwise" ? "anticlockwise" : "clockwise");
+        setCircleDirection(prev => {
+          const newDirection = prev === "clockwise" ? "anticlockwise" : "clockwise";
+          setRotationCount(1);
+          return newDirection;
+        });
       }, 6000);
       return () => clearInterval(interval);
     }
   }, [showCircle]);
+
+  // Rotation counter
+  useEffect(() => {
+    if (showCircle) {
+      const interval = setInterval(() => {
+        setRotationCount(prev => {
+          if (circleDirection === "clockwise") {
+            return prev < 5 ? prev + 1 : 1;
+          } else {
+            return prev > 1 ? prev - 1 : 5;
+          }
+        });
+      }, 1200);
+      return () => clearInterval(interval);
+    }
+  }, [showCircle, circleDirection]);
 
   const resetModule = (module: Module) => {
     setFocusPoint("near");
@@ -58,60 +80,49 @@ const Vision = () => {
     setBlinkCount(0);
     setShowCircle(false);
     setCircleDirection("clockwise");
+    setRotationCount(1);
     setActiveModule(module);
   };
 
   return (
     <PageLayout tagline="Gentle exercises for eye focus and clarity">
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative">
-        {/* Module Selector Buttons */}
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
+        {/* Module Selector Buttons - Below Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-10 flex gap-2 md:gap-4 bg-background/80 backdrop-blur-sm px-4 py-3 rounded-full border border-border/50 shadow-lg"
+          className="flex flex-wrap justify-center gap-3 md:gap-4 mb-12 mt-8"
         >
           <button
             onClick={() => resetModule("nearfar")}
-            className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-light tracking-wide transition-all duration-300 ${
+            className={`px-6 md:px-8 py-3 rounded-full text-sm md:text-base font-light tracking-wide transition-all duration-300 ${
               activeModule === "nearfar"
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "bg-background/50 text-muted-foreground hover:text-foreground hover:bg-background/80 border border-border/50"
             }`}
           >
             Near–Far Focus
           </button>
           <button
             onClick={() => resetModule("palming")}
-            className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-light tracking-wide transition-all duration-300 ${
+            className={`px-6 md:px-8 py-3 rounded-full text-sm md:text-base font-light tracking-wide transition-all duration-300 ${
               activeModule === "palming"
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "bg-background/50 text-muted-foreground hover:text-foreground hover:bg-background/80 border border-border/50"
             }`}
           >
             Palming Warmth
           </button>
           <button
             onClick={() => resetModule("blink")}
-            className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-light tracking-wide transition-all duration-300 ${
+            className={`px-6 md:px-8 py-3 rounded-full text-sm md:text-base font-light tracking-wide transition-all duration-300 ${
               activeModule === "blink"
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "bg-background/50 text-muted-foreground hover:text-foreground hover:bg-background/80 border border-border/50"
             }`}
           >
             Blink & Refresh
           </button>
-        </motion.div>
-
-        {/* 20-20-20 Rule - Always visible */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mb-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
-        >
-          <p className="text-center text-xs md:text-sm text-muted-foreground italic">
-            Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
-          </p>
         </motion.div>
 
         <motion.div
@@ -176,6 +187,18 @@ const Vision = () => {
               <p className="text-base md:text-lg text-foreground capitalize mt-8">
                 {focusPoint}
               </p>
+              
+              {/* 20-20-20 Rule */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mt-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
+              >
+                <p className="text-center text-xs md:text-sm text-muted-foreground italic">
+                  Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
+                </p>
+              </motion.div>
             </motion.div>
           )}
 
@@ -240,6 +263,18 @@ const Vision = () => {
                   Complete ✨
                 </motion.p>
               )}
+
+              {/* 20-20-20 Rule */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mt-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
+              >
+                <p className="text-center text-xs md:text-sm text-muted-foreground italic">
+                  Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
+                </p>
+              </motion.div>
             </motion.div>
           )}
 
@@ -329,11 +364,26 @@ const Vision = () => {
                       </svg>
                     </motion.div>
                   </div>
-                  <p className="text-xs md:text-sm text-muted-foreground mt-8 capitalize">
+                  <p className="text-2xl md:text-3xl text-foreground mt-8">
+                    {rotationCount}
+                  </p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-2 capitalize">
                     {circleDirection}
                   </p>
                 </>
               )}
+
+              {/* 20-20-20 Rule */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mt-12 p-4 md:p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50 max-w-2xl mx-auto"
+              >
+                <p className="text-center text-xs md:text-sm text-muted-foreground italic">
+                  Every 20 minutes, look at something 20 feet (6 meters) away for 20 seconds.
+                </p>
+              </motion.div>
             </motion.div>
           )}
         </motion.div>
