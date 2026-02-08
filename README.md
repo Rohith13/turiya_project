@@ -1,73 +1,82 @@
-# Welcome to your Lovable project
+# Turiya Project
 
-## Project info
+Turiya Project is a minimalist mindfulness web application designed as a quiet digital sanctuary.
 
-**URL**: https://lovable.dev/projects/fa3c9bdf-22dc-4370-a69f-4ab629a63b6e
+Inspired by the Sanskrit concept of *Turiya* — the fourth state of consciousness beyond waking, dreaming, and deep sleep — this project focuses on simple awareness, stillness, and presence, without noise or pressure.
 
-## How can I edit this code?
+There are no accounts, no ads, no notifications, and no data collection.  
+The experience is intentionally calm, respectful, and distraction-free.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🌿 Purpose
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fa3c9bdf-22dc-4370-a69f-4ab629a63b6e) and start prompting.
+Turiya Project was created to explore how technology can offer moments of mindfulness without demanding attention or engagement.
 
-Changes made via Lovable will be committed automatically to this repo.
+It is not a productivity tool, habit tracker, or medical application.  
+It is a gentle space to pause — nothing more, nothing less.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## ✨ Features
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Stillness with rotating reflective quotes
+- Digital prayer beads (Japa)
+- Breath awareness and breathing guidance
+- Eye relaxation and visual focus rituals
+- Mindful bell / interval reminders
+- Gentle self-talk and affirmations
+- Optional gratitude-based support (no paywalls)
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🌐 Live Application
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+**URL:** https://turiya.website/
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 🛠️ Tech Stack
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+This project is built using:
 
 - Vite
 - TypeScript
 - React
-- shadcn-ui
 - Tailwind CSS
+- shadcn/ui
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/fa3c9bdf-22dc-4370-a69f-4ab629a63b6e) and click on Share -> Publish.
+## 🔒 Privacy & Data
 
-## Can I connect a custom domain to my Lovable project?
+- No user accounts
+- No analytics tracking
+- No personal data collection
+- No cookies beyond basic functionality
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🧘 Philosophy
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is built with restraint.
+
+No gamification.  
+No streaks.  
+No optimization for addiction or growth metrics.
+
+The app does not remember you — so you don’t have to remember it.
+
+---
+
+## 📄 License
+
+This project is shared publicly for learning and exploration.  
+Please respect the intention behind it if you choose to reuse or adapt the code.
+
+---
+
+## 🤝 Credits
+
+Built as part of **Revora Labs**, guided by clarity, simplicity, and care.
+
