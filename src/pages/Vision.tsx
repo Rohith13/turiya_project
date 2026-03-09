@@ -25,12 +25,17 @@ const Vision = () => {
     }
   }, [activeModule]);
 
+  // Palming elapsed timer (hidden) and breath phase cycling
   useEffect(() => {
-    if (activeModule === "palming" && palmingTimer > 0) {
-      const timer = setTimeout(() => setPalmingTimer((prev) => prev - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [activeModule, palmingTimer]);
+    if (activeModule !== "palming") return;
+    const elapsed = setInterval(() => {
+      setPalmingElapsed((prev) => Math.min(prev + 1, PALMING_DURATION));
+    }, 1000);
+    const breathCycle = setInterval(() => {
+      setPalmingBreathPhase((prev) => (prev === "in" ? "out" : "in"));
+    }, 4000);
+    return () => { clearInterval(elapsed); clearInterval(breathCycle); };
+  }, [activeModule]);
 
   useEffect(() => {
     if (activeModule === "blink" && blinkCount < 10) {
