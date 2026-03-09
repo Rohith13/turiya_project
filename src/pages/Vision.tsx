@@ -13,7 +13,6 @@ const Vision = () => {
   const [circleDirection, setCircleDirection] = useState<"clockwise" | "anticlockwise">("clockwise");
   const [rotationCount, setRotationCount] = useState(1);
 
-  // Near-Far Focus toggle
   useEffect(() => {
     if (activeModule === "nearfar") {
       const interval = setInterval(() => {
@@ -23,7 +22,6 @@ const Vision = () => {
     }
   }, [activeModule]);
 
-  // Palming timer countdown
   useEffect(() => {
     if (activeModule === "palming" && palmingTimer > 0) {
       const timer = setTimeout(() => setPalmingTimer((prev) => prev - 1), 1000);
@@ -31,7 +29,6 @@ const Vision = () => {
     }
   }, [activeModule, palmingTimer]);
 
-  // Blink animation
   useEffect(() => {
     if (activeModule === "blink" && blinkCount < 10) {
       const interval = setInterval(() => {
@@ -43,7 +40,6 @@ const Vision = () => {
     }
   }, [activeModule, blinkCount, showCircle]);
 
-  // Circle rotation direction toggle and counter
   useEffect(() => {
     if (showCircle) {
       setRotationCount(1);
@@ -58,7 +54,6 @@ const Vision = () => {
     }
   }, [showCircle]);
 
-  // Rotation counter
   useEffect(() => {
     if (showCircle) {
       const interval = setInterval(() => {
@@ -127,63 +122,61 @@ const Vision = () => {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl">
-          {/* Near-Far Focus Module */}
+          {/* Near-Far Focus Module — single dot that transitions between near and far */}
           {activeModule === "nearfar" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto">
                 Look at your thumb (20–30 cm away), then look at a distant object.
                 <br />
                 Perform this back and forth for 10–15 seconds while breathing naturally.
-                <br />
               </p>
               <div className="relative h-64 md:h-96 flex items-center justify-center">
-                {/* Near Dot */}
+                {/* Single focus dot — near: center, large, warm / far: above center, small, cool */}
                 <motion.div
                   animate={{
-                    scale: focusPoint === "near" ? [1, 1.2, 1] : 0.8,
-                    opacity: focusPoint === "near" ? 1 : 0.3,
+                    scale: focusPoint === "near" ? 1 : 0.4,
+                    y: focusPoint === "near" ? 0 : -60,
+                    opacity: 1,
                   }}
-                  transition={{ duration: 2, ease: "easeInOut" }}
-                  className="absolute w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-primary to-primary/60 blur-sm"
-                  style={{ filter: "blur(8px)" }}
-                />
-                <motion.div
-                  animate={{
-                    scale: focusPoint === "near" ? [1, 1.2, 1] : 0.8,
-                    opacity: focusPoint === "near" ? 1 : 0.3,
-                  }}
-                  transition={{ duration: 2, ease: "easeInOut" }}
-                  className="absolute w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary"
-                />
-
-                {/* Far Dot */}
-                <motion.div
-                  animate={{
-                    scale: focusPoint === "far" ? [1, 1.2, 1] : 0.6,
-                    opacity: focusPoint === "far" ? 1 : 0.2,
-                    x: [150, 200],
-                    y: [-80, -100],
-                  }}
-                  transition={{ duration: 2, ease: "easeInOut" }}
-                  className="absolute w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-secondary to-secondary/60 blur-sm"
-                  style={{ filter: "blur(6px)" }}
-                />
-                <motion.div
-                  animate={{
-                    scale: focusPoint === "far" ? [1, 1.2, 1] : 0.6,
-                    opacity: focusPoint === "far" ? 1 : 0.2,
-                    x: [150, 200],
-                    y: [-80, -100],
-                  }}
-                  transition={{ duration: 2, ease: "easeInOut" }}
-                  className="absolute w-6 h-6 md:w-8 md:h-8 rounded-full bg-secondary"
-                />
+                  transition={{ duration: 2.5, ease: "easeInOut" }}
+                  className="absolute"
+                >
+                  {/* Glow */}
+                  <motion.div
+                    animate={{
+                      background: focusPoint === "near"
+                        ? "radial-gradient(circle, rgba(212,149,106,0.5) 0%, rgba(212,149,106,0.1) 60%, transparent 100%)"
+                        : "radial-gradient(circle, rgba(140,170,200,0.4) 0%, rgba(140,170,200,0.08) 60%, transparent 100%)",
+                    }}
+                    transition={{ duration: 2.5, ease: "easeInOut" }}
+                    className="w-32 h-32 md:w-40 md:h-40 rounded-full"
+                    style={{ filter: "blur(12px)" }}
+                  />
+                  {/* Core dot */}
+                  <motion.div
+                    animate={{
+                      backgroundColor: focusPoint === "near" ? "#D4956A" : "#8CAAC8",
+                      width: focusPoint === "near" ? 48 : 20,
+                      height: focusPoint === "near" ? 48 : 20,
+                    }}
+                    transition={{ duration: 2.5, ease: "easeInOut" }}
+                    className="absolute rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                  />
+                </motion.div>
               </div>
-              <p className="text-base md:text-lg text-foreground capitalize mt-8">{focusPoint}</p>
+              <motion.p
+                key={focusPoint}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="text-base md:text-lg text-foreground capitalize mt-8"
+              >
+                {focusPoint}
+              </motion.p>
             </motion.div>
           )}
 
-          {/* Palming Warmth Module */}
+          {/* Palming Warmth Module — single centered warm glow */}
           {activeModule === "palming" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
@@ -194,30 +187,19 @@ const Vision = () => {
               <div className="relative h-64 md:h-96 flex items-center justify-center">
                 <motion.div
                   animate={{
-                    scale: [1, 1.5, 1],
+                    scale: [1, 1.3, 1],
                     opacity: [0.3, 0.6, 0.3],
                   }}
                   transition={{
-                    duration: 3,
+                    duration: 4,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                  className="absolute w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-amber-400/20 to-orange-300/20"
-                  style={{ filter: "blur(40px)" }}
-                />
-                <motion.div
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.4, 0.7, 0.4],
+                  className="absolute w-56 h-56 md:w-72 md:h-72 rounded-full"
+                  style={{
+                    background: "radial-gradient(circle, rgba(212,149,106,0.4) 0%, rgba(212,149,106,0.1) 50%, transparent 80%)",
+                    filter: "blur(30px)",
                   }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.5,
-                  }}
-                  className="absolute w-36 h-36 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-amber-300/30 to-orange-200/30"
-                  style={{ filter: "blur(30px)" }}
                 />
               </div>
               <AnimatePresence>
@@ -253,7 +235,6 @@ const Vision = () => {
                     Breathe softly as you blink.
                   </p>
                   <div className="relative h-64 md:h-96 flex items-center justify-center">
-                    {/* Eyelid animation */}
                     <div className="relative w-36 h-24 md:w-48 md:h-32">
                       <motion.div
                         animate={{
@@ -282,7 +263,6 @@ const Vision = () => {
                     Slow, smooth, and calm.
                   </p>
                   <div className="relative h-64 md:h-96 flex items-center justify-center">
-                    {/* Center glow */}
                     <motion.div
                       animate={{
                         scale: [1, 1.2, 1],
@@ -296,8 +276,6 @@ const Vision = () => {
                       className="absolute w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-primary/40 to-secondary/40"
                       style={{ filter: "blur(20px)" }}
                     />
-
-                    {/* Rotating ring */}
                     <motion.div
                       animate={{
                         rotate: circleDirection === "clockwise" ? 360 : -360,
