@@ -20,7 +20,7 @@ const moodSettings = {
     gradient: "focus" as const,
     color: "35 70% 65%",
     glowColor: "35 85% 80%",
-    type: "orb" as const,
+    type: "arc" as const,
   },
   prana: {
     duration: 33,
@@ -40,6 +40,13 @@ const moodSettings = {
   },
 };
 
+// Phase colors for Focus mode
+const phaseColors = {
+  inhale: { stroke: "hsl(210, 40%, 60%)", label: "Steel Blue" },   // steel blue
+  hold: { stroke: "hsl(35, 70%, 65%)", label: "Amber" },            // soft amber
+  exhale: { stroke: "hsl(140, 30%, 60%)", label: "Sage" },          // cool sage
+};
+
 const Breath = () => {
   const [mood, setMood] = useState<Mood>("calm");
   const [timer, setTimer] = useState(0);
@@ -50,7 +57,6 @@ const Breath = () => {
   const setting = moodSettings[mood];
   const duration = setting.duration;
 
-  // Timer logic for all modes - 1 second intervals
   useEffect(() => {
     setTimer(0);
     setPhase("inhale");
@@ -102,9 +108,9 @@ const Breath = () => {
             lastPhase = newPhase;
           }
           setPhase(newPhase);
-          
           return nextTime;
         } else {
+          // For orb and arc modes (calm, focus)
           const halfDuration = duration / 2;
           const cycleTime = duration + 2;
           const currentTime = nextTime % cycleTime;
@@ -134,7 +140,6 @@ const Breath = () => {
             lastPhase = newPhase;
           }
           setPhase(newPhase);
-          
           return nextTime;
         }
       });
@@ -143,51 +148,40 @@ const Breath = () => {
     return () => clearInterval(interval);
   }, [mood, duration, setting]);
 
-  // Calculate arc progress based on phase and timer
   const getArcProgress = () => {
     if (setting.type === "wave") {
       const cycleTime = 33;
       const currentTime = timer % cycleTime;
-      
-      if (currentTime < 5) {
-        return (currentTime + 1) / 5; // inhale: 0 -> 1
-      } else if (currentTime < 21) {
-        return 1; // hold at max
-      } else if (currentTime < 32) {
-        return 1 - ((currentTime - 21) / 10); // exhale: 1 -> 0
-      }
+      if (currentTime < 5) return (currentTime + 1) / 5;
+      else if (currentTime < 21) return 1;
+      else if (currentTime < 32) return 1 - ((currentTime - 21) / 10);
       return 0;
     } else {
       const halfDuration = duration / 2;
       const cycleTime = duration + 2;
       const currentTime = timer % cycleTime;
-      
-      if (currentTime < halfDuration) {
-        return (currentTime + 1) / halfDuration; // inhale
-      } else if (currentTime < duration + 1) {
-        return 1 - ((currentTime - halfDuration) / (halfDuration + 1)); // exhale
-      }
+      if (currentTime < halfDuration) return (currentTime + 1) / halfDuration;
+      else if (currentTime < duration + 1) return 1 - ((currentTime - halfDuration) / (halfDuration + 1));
       return 0;
     }
   };
 
   const arcProgress = getArcProgress();
 
-  // Generate sine wave path that breathes
   const generateBreathingArc = (progress: number) => {
     const width = 280;
     const centerY = 160;
-    const amplitude = 40 + (progress * 60); // Arc height based on breath
+    const amplitude = 40 + (progress * 60);
     const points: string[] = [];
-    
     for (let x = 20; x <= 300; x += 5) {
       const normalizedX = (x - 20) / width;
       const y = centerY - Math.sin(normalizedX * Math.PI) * amplitude;
       points.push(`${x},${y}`);
     }
-    
     return `M ${points.join(' L ')}`;
   };
+
+  const currentPhaseColor = phaseColors[phase]?.stroke || phaseColors.inhale.stroke;
 
   return (
     <PageLayout gradient={setting.gradient} tagline="Breathe in light, breathe out peace.">
@@ -209,7 +203,6 @@ const Breath = () => {
 
         {setting.type === "orb" ? (
           <>
-            {/* Glow Aura Effect */}
             <div className="relative w-80 h-80 flex items-center justify-center">
               <motion.div
                 className="absolute rounded-full"
@@ -227,13 +220,8 @@ const Breath = () => {
                     `blur(20px) brightness(0.8)`,
                   ],
                 }}
-                transition={{
-                  duration: duration,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                transition={{ duration: duration, repeat: Infinity, ease: "easeInOut" }}
               />
-              
               <motion.div
                 className="absolute rounded-full"
                 style={{
@@ -241,21 +229,11 @@ const Breath = () => {
                   height: "120px",
                   background: `radial-gradient(circle, hsl(${setting.color}) 0%, transparent 70%)`,
                 }}
-                animate={{
-                  scale: [0.9, 1.2, 0.9],
-                  opacity: [0.6, 1, 0.6],
-                }}
-                transition={{
-                  duration: duration,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+                animate={{ scale: [0.9, 1.2, 0.9], opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: duration, repeat: Infinity, ease: "easeInOut" }}
               />
-              
               <div className="text-center z-10 space-y-1">
-                <p className="text-6xl font-light text-foreground/90">
-                  {displayNumber || ""}
-                </p>
+                <p className="text-6xl font-light text-foreground/90">{displayNumber || ""}</p>
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={`${phase}-${phaseKey}`}
@@ -270,8 +248,6 @@ const Breath = () => {
                 </AnimatePresence>
               </div>
             </div>
-
-            {/* Instructions */}
             <div className="text-center space-y-2 max-w-md">
               <p className="text-sm text-muted-foreground font-light">
                 Inhale as the light brightens • Exhale as the light dims
@@ -281,9 +257,73 @@ const Breath = () => {
               </p>
             </div>
           </>
+        ) : setting.type === "arc" ? (
+          <>
+            {/* Focus mode — sine-wave arc with phase-dependent colors */}
+            <div className="relative w-80 h-80 flex items-center justify-center">
+              <svg className="absolute w-full h-full" viewBox="0 0 320 320">
+                <defs>
+                  <filter id="focusArcGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                <motion.path
+                  d={generateBreathingArc(arcProgress)}
+                  stroke={currentPhaseColor}
+                  strokeWidth="4"
+                  fill="none"
+                  strokeLinecap="round"
+                  filter="url(#focusArcGlow)"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                />
+                <motion.path
+                  d={generateBreathingArc(arcProgress * 0.7)}
+                  stroke={currentPhaseColor}
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  opacity={0.25}
+                />
+              </svg>
+              <div className="text-center z-10 space-y-2">
+                {/* Phase label is primary */}
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`${phase}-${phaseKey}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-2xl font-light capitalize tracking-wider"
+                    style={{ color: currentPhaseColor }}
+                  >
+                    {phase}
+                  </motion.p>
+                </AnimatePresence>
+                {/* Countdown is secondary */}
+                <p className="text-sm font-extralight text-foreground/50">
+                  {displayNumber || ""}
+                </p>
+              </div>
+            </div>
+            <div className="text-center space-y-2 max-w-md">
+              <p className="text-sm text-muted-foreground font-light">
+                Follow the arc • Let the color guide your breath
+              </p>
+              <p className="text-xs text-muted-foreground/70 font-light mt-4">
+                {duration} second cycle • {Math.round(60 / duration)} breaths per minute
+              </p>
+            </div>
+          </>
         ) : (
           <>
-            {/* Breathing Arc Animation */}
+            {/* Prana Wave Animation */}
             <div className="relative w-80 h-80 flex items-center justify-center">
               <svg className="absolute w-full h-full" viewBox="0 0 320 320">
                 <defs>
@@ -299,8 +339,6 @@ const Breath = () => {
                     </feMerge>
                   </filter>
                 </defs>
-                
-                {/* Breathing sine-wave arc */}
                 <motion.path
                   d={generateBreathingArc(arcProgress)}
                   stroke="url(#arcGradient)"
@@ -312,8 +350,6 @@ const Breath = () => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 />
-                
-                {/* Secondary subtle arc for depth */}
                 <motion.path
                   d={generateBreathingArc(arcProgress * 0.7)}
                   stroke={`hsl(${setting.color})`}
@@ -323,12 +359,8 @@ const Breath = () => {
                   opacity={0.3}
                 />
               </svg>
-              
-              {/* Center content - number is secondary */}
               <div className="text-center z-10 space-y-2">
-                <p className="text-3xl font-extralight text-foreground/60">
-                  {displayNumber || ""}
-                </p>
+                <p className="text-3xl font-extralight text-foreground/60">{displayNumber || ""}</p>
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={`${phase}-${phaseKey}`}
@@ -343,8 +375,6 @@ const Breath = () => {
                 </AnimatePresence>
               </div>
             </div>
-
-            {/* Instructions */}
             <div className="text-center space-y-2 max-w-md">
               <p className="text-sm text-muted-foreground font-light">
                 5s Inhale • 15s Hold • 10s Exhale
