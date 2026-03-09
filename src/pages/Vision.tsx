@@ -107,6 +107,8 @@ const Vision = () => {
     setFocusPoint("near");
     setPalmingElapsed(0);
     setPalmingBreathPhase("in");
+    setPalmingComplete(false);
+    setPalmingNamasteSubline(false);
     setBlinkCount(0);
     setShowCircle(false);
     setCircleDirection("clockwise");
