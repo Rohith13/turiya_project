@@ -27,17 +27,41 @@ const Vision = () => {
     }
   }, [activeModule]);
 
-  // Palming elapsed timer (hidden) and breath phase cycling
+  // Palming elapsed timer and breath phase cycling
   useEffect(() => {
-    if (activeModule !== "palming") return;
+    if (activeModule !== "palming" || palmingComplete) return;
     const elapsed = setInterval(() => {
-      setPalmingElapsed((prev) => Math.min(prev + 1, PALMING_DURATION));
+      setPalmingElapsed((prev) => {
+        const next = prev + 1;
+        if (next >= PALMING_DURATION) {
+          setPalmingComplete(true);
+          clearInterval(elapsed);
+          return PALMING_DURATION;
+        }
+        return next;
+      });
     }, 1000);
     const breathCycle = setInterval(() => {
       setPalmingBreathPhase((prev) => (prev === "in" ? "out" : "in"));
     }, 4000);
     return () => { clearInterval(elapsed); clearInterval(breathCycle); };
-  }, [activeModule]);
+  }, [activeModule, palmingComplete]);
+
+  // Palming completion → show subline after 600ms, then auto-reset after 4s
+  useEffect(() => {
+    if (!palmingComplete) {
+      setPalmingNamasteSubline(false);
+      return;
+    }
+    const sublineTimer = setTimeout(() => setPalmingNamasteSubline(true), 600);
+    const resetTimer = setTimeout(() => {
+      setPalmingComplete(false);
+      setPalmingNamasteSubline(false);
+      setPalmingElapsed(0);
+      setPalmingBreathPhase("in");
+    }, 5600); // 600ms delay + ~4s of silence + 1s buffer for fade
+    return () => { clearTimeout(sublineTimer); clearTimeout(resetTimer); };
+  }, [palmingComplete]);
 
   useEffect(() => {
     if (activeModule === "blink" && blinkCount < 10) {
