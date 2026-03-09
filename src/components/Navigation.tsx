@@ -25,8 +25,8 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="container mx-auto px-4 py-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto px-4 py-5">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link 
@@ -34,7 +34,7 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <img src={turiyaLogo} alt="Turiya Project" className="h-14 md:h-16 w-auto" />
-            <span className="text-lg font-light tracking-wide text-foreground">
+            <span className="text-lg font-light tracking-wide" style={{ color: "#5C4A32" }}>
               Turiya Project
             </span>
           </Link>
@@ -45,13 +45,15 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-light tracking-wide transition-all duration-300 ${
-                  location.pathname === link.path
-                    ? "text-primary font-normal"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`text-sm font-light transition-all duration-300`}
+                style={{
+                  letterSpacing: "0.08em",
+                  color: location.pathname === link.path ? "#D4956A" : undefined,
+                }}
               >
-                {link.label}
+                <span className={location.pathname !== link.path ? "text-muted-foreground hover:text-foreground transition-colors" : ""}>
+                  {link.label}
+                </span>
               </Link>
             ))}
             
@@ -99,11 +101,11 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
                       key={link.path}
                       to={link.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`text-base font-light tracking-wide transition-all duration-300 ${
-                        location.pathname === link.path
-                          ? "text-primary font-normal"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
+                      className="text-base font-light transition-all duration-300"
+                      style={{
+                        letterSpacing: "0.08em",
+                        color: location.pathname === link.path ? "#D4956A" : "hsl(var(--muted-foreground))",
+                      }}
                     >
                       {link.label}
                     </Link>
