@@ -45,13 +45,15 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-light tracking-wide transition-all duration-300 ${
-                  location.pathname === link.path
-                    ? "text-primary font-normal"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`text-sm font-light transition-all duration-300`}
+                style={{
+                  letterSpacing: "0.08em",
+                  color: location.pathname === link.path ? "#D4956A" : undefined,
+                }}
               >
-                {link.label}
+                <span className={location.pathname !== link.path ? "text-muted-foreground hover:text-foreground transition-colors" : ""}>
+                  {link.label}
+                </span>
               </Link>
             ))}
             
