@@ -185,9 +185,9 @@ const Vision = () => {
             </motion.div>
           )}
 
-          {/* Palming Warmth Module — single centered warm glow */}
+          {/* Palming Warmth Module — warm glow + breathing text */}
           {activeModule === "palming" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center relative">
               <p className="text-sm md:text-base text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
                 Rub your palms until warm and gently cup them over your closed eyes.
                 <br />
@@ -211,23 +211,48 @@ const Vision = () => {
                   }}
                 />
               </div>
-              <AnimatePresence>
-                {palmingTimer > 0 && (
+
+              {/* Cycling breath text */}
+              <div className="mt-8 h-8">
+                <AnimatePresence mode="wait">
                   <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-2xl md:text-3xl text-foreground mt-8"
+                    key={palmingBreathPhase}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 0.7, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 1.2, ease: "easeInOut" }}
+                    className="text-base font-light text-muted-foreground tracking-wide"
+                    style={{ fontFamily: "'Lora', serif" }}
                   >
-                    {palmingTimer}s
+                    {palmingBreathPhase === "in" ? "Breathe in..." : "...and release."}
                   </motion.p>
-                )}
-              </AnimatePresence>
-              {palmingTimer === 0 && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-muted-foreground mt-8">
-                  Complete ✨
-                </motion.p>
-              )}
+                </AnimatePresence>
+              </div>
+
+              {/* Hairline progress arc — barely visible */}
+              <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-10">
+                <svg width="120" height="12" viewBox="0 0 120 12">
+                  <path
+                    d="M 10 10 Q 60 0 110 10"
+                    fill="none"
+                    stroke="hsl(var(--foreground))"
+                    strokeWidth="1"
+                    opacity="0.08"
+                    strokeLinecap="round"
+                  />
+                  <motion.path
+                    d="M 10 10 Q 60 0 110 10"
+                    fill="none"
+                    stroke="hsl(var(--foreground))"
+                    strokeWidth="1"
+                    opacity="0.15"
+                    strokeLinecap="round"
+                    strokeDasharray="100"
+                    strokeDashoffset={100 - (palmingElapsed / PALMING_DURATION) * 100}
+                    transition={{ duration: 1 }}
+                  />
+                </svg>
+              </div>
             </motion.div>
           )}
 
