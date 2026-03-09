@@ -79,7 +79,8 @@ const Vision = () => {
 
   const resetModule = (module: Module) => {
     setFocusPoint("near");
-    setPalmingTimer(10);
+    setPalmingElapsed(0);
+    setPalmingBreathPhase("in");
     setBlinkCount(0);
     setShowCircle(false);
     setCircleDirection("clockwise");
