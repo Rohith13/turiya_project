@@ -9,6 +9,8 @@ const Vision = () => {
   const [focusPoint, setFocusPoint] = useState<"near" | "far">("near");
   const [palmingElapsed, setPalmingElapsed] = useState(0);
   const [palmingBreathPhase, setPalmingBreathPhase] = useState<"in" | "out">("in");
+  const [palmingComplete, setPalmingComplete] = useState(false);
+  const [palmingNamasteSubline, setPalmingNamasteSubline] = useState(false);
   const [blinkCount, setBlinkCount] = useState(0);
   const [showCircle, setShowCircle] = useState(false);
   const [circleDirection, setCircleDirection] = useState<"clockwise" | "anticlockwise">("clockwise");
@@ -25,17 +27,41 @@ const Vision = () => {
     }
   }, [activeModule]);
 
-  // Palming elapsed timer (hidden) and breath phase cycling
+  // Palming elapsed timer and breath phase cycling
   useEffect(() => {
-    if (activeModule !== "palming") return;
+    if (activeModule !== "palming" || palmingComplete) return;
     const elapsed = setInterval(() => {
-      setPalmingElapsed((prev) => Math.min(prev + 1, PALMING_DURATION));
+      setPalmingElapsed((prev) => {
+        const next = prev + 1;
+        if (next >= PALMING_DURATION) {
+          setPalmingComplete(true);
+          clearInterval(elapsed);
+          return PALMING_DURATION;
+        }
+        return next;
+      });
     }, 1000);
     const breathCycle = setInterval(() => {
       setPalmingBreathPhase((prev) => (prev === "in" ? "out" : "in"));
     }, 4000);
     return () => { clearInterval(elapsed); clearInterval(breathCycle); };
-  }, [activeModule]);
+  }, [activeModule, palmingComplete]);
+
+  // Palming completion → show subline after 600ms, then auto-reset after 4s
+  useEffect(() => {
+    if (!palmingComplete) {
+      setPalmingNamasteSubline(false);
+      return;
+    }
+    const sublineTimer = setTimeout(() => setPalmingNamasteSubline(true), 600);
+    const resetTimer = setTimeout(() => {
+      setPalmingComplete(false);
+      setPalmingNamasteSubline(false);
+      setPalmingElapsed(0);
+      setPalmingBreathPhase("in");
+    }, 5600); // 600ms delay + ~4s of silence + 1s buffer for fade
+    return () => { clearTimeout(sublineTimer); clearTimeout(resetTimer); };
+  }, [palmingComplete]);
 
   useEffect(() => {
     if (activeModule === "blink" && blinkCount < 10) {
@@ -81,6 +107,8 @@ const Vision = () => {
     setFocusPoint("near");
     setPalmingElapsed(0);
     setPalmingBreathPhase("in");
+    setPalmingComplete(false);
+    setPalmingNamasteSubline(false);
     setBlinkCount(0);
     setShowCircle(false);
     setCircleDirection("clockwise");
@@ -194,65 +222,103 @@ const Vision = () => {
                 Stay here for a few breaths.
               </p>
               <div className="relative h-64 md:h-96 flex items-center justify-center">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute w-56 h-56 md:w-72 md:h-72 rounded-full"
-                  style={{
-                    background: "radial-gradient(circle, rgba(212,149,106,0.4) 0%, rgba(212,149,106,0.1) 50%, transparent 80%)",
-                    filter: "blur(30px)",
-                  }}
-                />
-              </div>
-
-              {/* Cycling breath text */}
-              <div className="mt-8 h-8">
                 <AnimatePresence mode="wait">
-                  <motion.p
-                    key={palmingBreathPhase}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 0.7, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 1.2, ease: "easeInOut" }}
-                    className="text-base font-light text-muted-foreground tracking-wide"
-                    style={{ fontFamily: "'Lora', serif" }}
-                  >
-                    {palmingBreathPhase === "in" ? "Breathe in..." : "...and release."}
-                  </motion.p>
+                  {!palmingComplete ? (
+                    <motion.div
+                      key="orb"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1.5, ease: "easeInOut" }}
+                      className="absolute w-56 h-56 md:w-72 md:h-72 rounded-full"
+                      style={{
+                        background: "radial-gradient(circle, rgba(212,149,106,0.4) 0%, rgba(212,149,106,0.1) 50%, transparent 80%)",
+                        filter: "blur(30px)",
+                        animation: "palmingPulse 4s ease-in-out infinite",
+                      }}
+                    />
+                  ) : (
+                    <motion.div
+                      key="namaste"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1.5, ease: "easeInOut" }}
+                      className="flex flex-col items-center justify-center gap-4"
+                    >
+                      <motion.p
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className="text-4xl md:text-5xl font-light"
+                        style={{ fontFamily: "'Lora', serif", color: "#5C4A32" }}
+                      >
+                        Namaste
+                      </motion.p>
+                      <AnimatePresence>
+                        {palmingNamasteSubline && (
+                          <motion.p
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 0.6, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 1.2, ease: "easeOut" }}
+                            className="text-sm md:text-base font-light text-muted-foreground tracking-wide"
+                            style={{ fontFamily: "'Lora', serif" }}
+                          >
+                            Your eyes have rested. Your mind is still.
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </div>
 
-              {/* Hairline progress arc — barely visible */}
-              <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-10">
-                <svg width="120" height="12" viewBox="0 0 120 12">
-                  <path
-                    d="M 10 10 Q 60 0 110 10"
-                    fill="none"
-                    stroke="hsl(var(--foreground))"
-                    strokeWidth="1"
-                    opacity="0.08"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    d="M 10 10 Q 60 0 110 10"
-                    fill="none"
-                    stroke="hsl(var(--foreground))"
-                    strokeWidth="1"
-                    opacity="0.15"
-                    strokeLinecap="round"
-                    strokeDasharray="100"
-                    strokeDashoffset={100 - (palmingElapsed / PALMING_DURATION) * 100}
-                    transition={{ duration: 1 }}
-                  />
-                </svg>
-              </div>
+              {/* Cycling breath text — hidden during completion */}
+              {!palmingComplete && (
+                <div className="mt-8 h-8">
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={palmingBreathPhase}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 0.7, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 1.2, ease: "easeInOut" }}
+                      className="text-base font-light text-muted-foreground tracking-wide"
+                      style={{ fontFamily: "'Lora', serif" }}
+                    >
+                      {palmingBreathPhase === "in" ? "Breathe in..." : "...and release."}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Hairline progress arc — barely visible, hidden on complete */}
+              {!palmingComplete && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-10">
+                  <svg width="120" height="12" viewBox="0 0 120 12">
+                    <path
+                      d="M 10 10 Q 60 0 110 10"
+                      fill="none"
+                      stroke="hsl(var(--foreground))"
+                      strokeWidth="1"
+                      opacity="0.08"
+                      strokeLinecap="round"
+                    />
+                    <motion.path
+                      d="M 10 10 Q 60 0 110 10"
+                      fill="none"
+                      stroke="hsl(var(--foreground))"
+                      strokeWidth="1"
+                      opacity="0.15"
+                      strokeLinecap="round"
+                      strokeDasharray="100"
+                      strokeDashoffset={100 - (palmingElapsed / PALMING_DURATION) * 100}
+                      transition={{ duration: 1 }}
+                    />
+                  </svg>
+                </div>
+              )}
             </motion.div>
           )}
 
