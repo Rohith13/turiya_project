@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 
@@ -45,6 +45,7 @@ const Breath = () => {
   const [timer, setTimer] = useState(0);
   const [phase, setPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
   const [displayNumber, setDisplayNumber] = useState<number | null>(1);
+  const [phaseKey, setPhaseKey] = useState(0);
   
   const setting = moodSettings[mood];
   const duration = setting.duration;
@@ -54,68 +55,85 @@ const Breath = () => {
     setTimer(0);
     setPhase("inhale");
     setDisplayNumber(1);
+    setPhaseKey(0);
+    
+    let lastPhase = "inhale";
     
     const interval = setInterval(() => {
       setTimer((prev) => {
         const nextTime = prev + 1;
         
         if (setting.type === "wave") {
-          // Prana mode with gaps
-          const cycleTime = 33; // 5 inhale + 1 gap + 15 hold + 1 gap + 10 exhale + 1 gap
+          const cycleTime = 33;
           const currentTime = nextTime % cycleTime;
           
+          let newPhase: "inhale" | "hold" | "exhale" = "inhale";
+          
           if (currentTime < 5) {
-            setPhase("inhale");
+            newPhase = "inhale";
             setDisplayNumber(currentTime + 1);
           } else if (currentTime === 5) {
-            setPhase("inhale");
+            newPhase = "inhale";
             setDisplayNumber(null);
           } else if (currentTime < 21) {
-            setPhase("hold");
+            newPhase = "hold";
             if (currentTime === 6) {
               setDisplayNumber(null);
             } else {
               setDisplayNumber(currentTime - 6 + 1);
             }
           } else if (currentTime === 21) {
-            setPhase("hold");
+            newPhase = "hold";
             setDisplayNumber(null);
           } else if (currentTime < 32) {
-            setPhase("exhale");
+            newPhase = "exhale";
             if (currentTime === 22) {
               setDisplayNumber(null);
             } else {
               setDisplayNumber(32 - currentTime);
             }
           } else {
-            setPhase("exhale");
+            newPhase = "exhale";
             setDisplayNumber(null);
           }
           
+          if (newPhase !== lastPhase) {
+            setPhaseKey(k => k + 1);
+            lastPhase = newPhase;
+          }
+          setPhase(newPhase);
+          
           return nextTime;
         } else {
-          // For orb modes (calm, focus, energy) with gaps
           const halfDuration = duration / 2;
-          const cycleTime = duration + 2; // inhale + gap + exhale + gap
+          const cycleTime = duration + 2;
           const currentTime = nextTime % cycleTime;
           
+          let newPhase: "inhale" | "exhale" = "inhale";
+          
           if (currentTime < halfDuration) {
-            setPhase("inhale");
+            newPhase = "inhale";
             setDisplayNumber(currentTime + 1);
           } else if (currentTime === halfDuration) {
-            setPhase("inhale");
+            newPhase = "inhale";
             setDisplayNumber(null);
           } else if (currentTime < duration + 1) {
-            setPhase("exhale");
+            newPhase = "exhale";
             if (currentTime === halfDuration + 1) {
               setDisplayNumber(null);
             } else {
               setDisplayNumber(duration + 1 - currentTime);
             }
           } else {
-            setPhase("exhale");
+            newPhase = "exhale";
             setDisplayNumber(null);
           }
+          
+          if (newPhase !== lastPhase) {
+            setPhaseKey(k => k + 1);
+            lastPhase = newPhase;
+          }
+          setPhase(newPhase);
           
           return nextTime;
         }
@@ -125,6 +143,51 @@ const Breath = () => {
     return () => clearInterval(interval);
   }, [mood, duration, setting]);
 
+  // Calculate arc progress based on phase and timer
+  const getArcProgress = () => {
+    if (setting.type === "wave") {
+      const cycleTime = 33;
+      const currentTime = timer % cycleTime;
+      
+      if (currentTime < 5) {
+        return (currentTime + 1) / 5; // inhale: 0 -> 1
+      } else if (currentTime < 21) {
+        return 1; // hold at max
+      } else if (currentTime < 32) {
+        return 1 - ((currentTime - 21) / 10); // exhale: 1 -> 0
+      }
+      return 0;
+    } else {
+      const halfDuration = duration / 2;
+      const cycleTime = duration + 2;
+      const currentTime = timer % cycleTime;
+      
+      if (currentTime < halfDuration) {
+        return (currentTime + 1) / halfDuration; // inhale
+      } else if (currentTime < duration + 1) {
+        return 1 - ((currentTime - halfDuration) / (halfDuration + 1)); // exhale
+      }
+      return 0;
+    }
+  };
+
+  const arcProgress = getArcProgress();
+
+  // Generate sine wave path that breathes
+  const generateBreathingArc = (progress: number) => {
+    const width = 280;
+    const centerY = 160;
+    const amplitude = 40 + (progress * 60); // Arc height based on breath
+    const points: string[] = [];
+    
+    for (let x = 20; x <= 300; x += 5) {
+      const normalizedX = (x - 20) / width;
+      const y = centerY - Math.sin(normalizedX * Math.PI) * amplitude;
+      points.push(`${x},${y}`);
+    }
+    
+    return `M ${points.join(' L ')}`;
+  };
 
   return (
     <PageLayout gradient={setting.gradient} tagline="Breathe in light, breathe out peace.">
@@ -148,7 +211,6 @@ const Breath = () => {
           <>
             {/* Glow Aura Effect */}
             <div className="relative w-80 h-80 flex items-center justify-center">
-              {/* Main luminous orb with breathing effect */}
               <motion.div
                 className="absolute rounded-full"
                 style={{
@@ -172,7 +234,6 @@ const Breath = () => {
                 }}
               />
               
-              {/* Inner core glow */}
               <motion.div
                 className="absolute rounded-full"
                 style={{
@@ -195,9 +256,18 @@ const Breath = () => {
                 <p className="text-6xl font-light text-foreground/90">
                   {displayNumber || ""}
                 </p>
-                <p className="text-sm text-foreground/70 font-light capitalize">
-                  {displayNumber !== null && phase}
-                </p>
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`${phase}-${phaseKey}`}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-sm text-foreground/70 font-light capitalize"
+                  >
+                    {displayNumber !== null && phase}
+                  </motion.p>
+                </AnimatePresence>
               </div>
             </div>
 
@@ -213,48 +283,64 @@ const Breath = () => {
           </>
         ) : (
           <>
-            {/* Prana Wave Animation */}
+            {/* Breathing Arc Animation */}
             <div className="relative w-80 h-80 flex items-center justify-center">
               <svg className="absolute w-full h-full" viewBox="0 0 320 320">
                 <defs>
-                  <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style={{ stopColor: `hsl(${setting.color})`, stopOpacity: 0.8 }} />
-                    <stop offset="100%" style={{ stopColor: `hsl(${setting.glowColor})`, stopOpacity: 0.3 }} />
+                  <linearGradient id="arcGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" style={{ stopColor: `hsl(${setting.color})`, stopOpacity: 0.3 }} />
+                    <stop offset="100%" style={{ stopColor: `hsl(${setting.glowColor})`, stopOpacity: 0.9 }} />
                   </linearGradient>
+                  <filter id="arcGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
                 </defs>
                 
-                {/* Flowing wave line */}
+                {/* Breathing sine-wave arc */}
                 <motion.path
-                  d="M 40 160 Q 100 160, 160 160 T 280 160"
-                  stroke="url(#waveGradient)"
-                  strokeWidth="3"
+                  d={generateBreathingArc(arcProgress)}
+                  stroke="url(#arcGradient)"
+                  strokeWidth="4"
                   fill="none"
                   strokeLinecap="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{
-                    pathLength: phase === "inhale" ? [0, 1] : phase === "hold" ? 1 : [1, 0],
-                    d: phase === "inhale" 
-                      ? "M 40 280 Q 100 80, 160 80 T 280 80"
-                      : phase === "hold"
-                      ? "M 40 80 Q 100 80, 160 80 T 280 80"
-                      : "M 40 80 Q 100 280, 160 280 T 280 280",
-                    opacity: [0.6, 1, 0.6],
-                  }}
-                  transition={{
-                    duration: phase === "inhale" ? 5 : phase === "hold" ? 15 : 10,
-                    ease: "linear",
-                  }}
+                  filter="url(#arcGlow)"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                />
+                
+                {/* Secondary subtle arc for depth */}
+                <motion.path
+                  d={generateBreathingArc(arcProgress * 0.7)}
+                  stroke={`hsl(${setting.color})`}
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  opacity={0.3}
                 />
               </svg>
               
-              {/* Center content */}
+              {/* Center content - number is secondary */}
               <div className="text-center z-10 space-y-2">
-                <p className="text-5xl font-light text-foreground/90">
+                <p className="text-3xl font-extralight text-foreground/60">
                   {displayNumber || ""}
                 </p>
-                <p className="text-sm text-foreground/70 font-light capitalize">
-                  {displayNumber !== null && phase}
-                </p>
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`${phase}-${phaseKey}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-lg text-foreground/80 font-light capitalize tracking-wider"
+                  >
+                    {displayNumber !== null && phase}
+                  </motion.p>
+                </AnimatePresence>
               </div>
             </div>
 

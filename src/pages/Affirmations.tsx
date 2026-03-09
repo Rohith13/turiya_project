@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
-import * as Tone from "tone";
 
 type Tone = "peace" | "energy" | "healing" | "focus";
 
@@ -84,23 +84,29 @@ const toneSettings = {
 };
 
 const Affirmations = () => {
-  const [selectedTone, setSelectedTone] = useState<Tone>("peace");
+  const [selectedTone, setSelectedTone] = useState<Tone | null>(null);
   const [currentAffirmation, setCurrentAffirmation] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [visualizing, setVisualizing] = useState(false);
+  const [showPills, setShowPills] = useState(false);
 
   useEffect(() => {
+    // Delay showing pills for empty state effect
+    const timer = setTimeout(() => setShowPills(true), 600);
+    
+    // Check for saved tone
     const savedTone = localStorage.getItem("affirmationTone") as Tone;
     if (savedTone && affirmations[savedTone]) {
       setSelectedTone(savedTone);
+      generateNewAffirmation(savedTone);
     }
-    generateNewAffirmation(savedTone || "peace");
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const playGentleHaptic = () => {
-    // Gentle haptic feedback - soft, brief vibration
     if ('vibrate' in navigator) {
-      navigator.vibrate(50); // 50ms gentle pulse
+      navigator.vibrate(50);
     }
   };
 
@@ -128,72 +134,126 @@ const Affirmations = () => {
 
   return (
     <PageLayout gradient="calm" tagline="Every word is a mirror — see what you wish to become.">
-      <div className="flex flex-col items-center justify-center gap-12 w-full max-w-3xl">
-        {/* Tone selector */}
-        <div className="flex flex-wrap gap-3 justify-center">
-          {(Object.keys(toneSettings) as Tone[]).map((tone) => (
-            <Button
-              key={tone}
-              onClick={() => handleToneChange(tone)}
-              variant={selectedTone === tone ? "default" : "outline"}
-              size="lg"
-              className="min-w-[110px]"
+      <div className="flex flex-col items-center justify-center gap-12 w-full max-w-3xl min-h-[50vh]">
+        {/* Empty state or active state */}
+        <AnimatePresence mode="wait">
+          {!selectedTone ? (
+            <motion.div
+              key="empty-state"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center justify-center gap-10"
             >
-              {toneSettings[tone].label}
-            </Button>
-          ))}
-        </div>
+              {/* Empty state prompt */}
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-xl md:text-2xl font-light italic text-muted-foreground/70 text-center"
+                style={{ fontFamily: "'Lora', serif" }}
+              >
+                What do you need to hear today?
+              </motion.p>
 
-        {/* Affirmation display */}
-        <div className="relative w-full min-h-[300px] flex items-center justify-center">
-          {/* Background glow */}
-          <div
-            className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${
-              toneSettings[selectedTone].color
-            } blur-3xl transition-all duration-1000 ${
-              visualizing ? "scale-150 opacity-100" : "scale-100 opacity-50"
-            }`}
-          />
+              {/* Tone selector - fades in after 600ms */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: showPills ? 1 : 0, y: showPills ? 0 : 10 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-wrap gap-3 justify-center"
+              >
+                {(Object.keys(toneSettings) as Tone[]).map((tone) => (
+                  <Button
+                    key={tone}
+                    onClick={() => handleToneChange(tone)}
+                    variant="outline"
+                    size="lg"
+                    className="min-w-[110px]"
+                  >
+                    {toneSettings[tone].label}
+                  </Button>
+                ))}
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="active-state"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center justify-center gap-12 w-full"
+            >
+              {/* Tone selector */}
+              <div className="flex flex-wrap gap-3 justify-center">
+                {(Object.keys(toneSettings) as Tone[]).map((tone) => (
+                  <Button
+                    key={tone}
+                    onClick={() => handleToneChange(tone)}
+                    variant={selectedTone === tone ? "default" : "outline"}
+                    size="lg"
+                    className="min-w-[110px]"
+                  >
+                    {toneSettings[tone].label}
+                  </Button>
+                ))}
+              </div>
 
-          {/* Orb animations when visualizing */}
-          {visualizing && (
-            <>
-              <div className="absolute w-32 h-32 rounded-full bg-primary/30 animate-ping" />
-              <div
-                className="absolute w-48 h-48 rounded-full bg-primary/20 animate-pulse"
-                style={{ animationDuration: "2s" }}
-              />
-              <div
-                className="absolute w-64 h-64 rounded-full bg-primary/10 animate-pulse"
-                style={{ animationDuration: "3s" }}
-              />
-            </>
+              {/* Affirmation display */}
+              <div className="relative w-full min-h-[300px] flex items-center justify-center">
+                {/* Background glow */}
+                <div
+                  className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${
+                    toneSettings[selectedTone].color
+                  } blur-3xl transition-all duration-1000 ${
+                    visualizing ? "scale-150 opacity-100" : "scale-100 opacity-50"
+                  }`}
+                />
+
+                {/* Orb animations when visualizing */}
+                {visualizing && (
+                  <>
+                    <div className="absolute w-32 h-32 rounded-full bg-primary/30 animate-ping" />
+                    <div
+                      className="absolute w-48 h-48 rounded-full bg-primary/20 animate-pulse"
+                      style={{ animationDuration: "2s" }}
+                    />
+                    <div
+                      className="absolute w-64 h-64 rounded-full bg-primary/10 animate-pulse"
+                      style={{ animationDuration: "3s" }}
+                    />
+                  </>
+                )}
+
+                {/* Affirmation text */}
+                <p
+                  className={`relative z-10 text-2xl md:text-3xl font-light text-center px-8 transition-all duration-700 ${
+                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                  }`}
+                  style={{ fontFamily: "'Lora', serif" }}
+                >
+                  {currentAffirmation}
+                </p>
+              </div>
+
+              {/* Controls */}
+              <div className="flex gap-4">
+                <Button
+                  onClick={() => generateNewAffirmation(selectedTone)}
+                  variant="outline"
+                  size="lg"
+                >
+                  New Affirmation
+                </Button>
+                <Button onClick={handleVisualize} size="lg">
+                  Visualize
+                </Button>
+              </div>
+            </motion.div>
           )}
-
-          {/* Affirmation text */}
-          <p
-            className={`relative z-10 text-2xl md:text-3xl font-light text-center px-8 transition-all duration-700 ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-            style={{ fontFamily: "'Lora', serif" }}
-          >
-            {currentAffirmation}
-          </p>
-        </div>
-
-        {/* Controls */}
-        <div className="flex gap-4">
-          <Button
-            onClick={() => generateNewAffirmation(selectedTone)}
-            variant="outline"
-            size="lg"
-          >
-            New Affirmation
-          </Button>
-          <Button onClick={handleVisualize} size="lg">
-            Visualize
-          </Button>
-        </div>
+        </AnimatePresence>
       </div>
     </PageLayout>
   );
