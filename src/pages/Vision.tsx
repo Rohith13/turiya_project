@@ -7,11 +7,14 @@ type Module = "nearfar" | "palming" | "blink";
 const Vision = () => {
   const [activeModule, setActiveModule] = useState<Module>("nearfar");
   const [focusPoint, setFocusPoint] = useState<"near" | "far">("near");
-  const [palmingTimer, setPalmingTimer] = useState(10);
+  const [palmingElapsed, setPalmingElapsed] = useState(0);
+  const [palmingBreathPhase, setPalmingBreathPhase] = useState<"in" | "out">("in");
   const [blinkCount, setBlinkCount] = useState(0);
   const [showCircle, setShowCircle] = useState(false);
   const [circleDirection, setCircleDirection] = useState<"clockwise" | "anticlockwise">("clockwise");
   const [rotationCount, setRotationCount] = useState(1);
+
+  const PALMING_DURATION = 30; // total seconds for the subtle progress arc
 
   useEffect(() => {
     if (activeModule === "nearfar") {
