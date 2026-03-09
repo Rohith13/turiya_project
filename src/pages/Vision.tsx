@@ -9,6 +9,8 @@ const Vision = () => {
   const [focusPoint, setFocusPoint] = useState<"near" | "far">("near");
   const [palmingElapsed, setPalmingElapsed] = useState(0);
   const [palmingBreathPhase, setPalmingBreathPhase] = useState<"in" | "out">("in");
+  const [palmingComplete, setPalmingComplete] = useState(false);
+  const [palmingNamasteSubline, setPalmingNamasteSubline] = useState(false);
   const [blinkCount, setBlinkCount] = useState(0);
   const [showCircle, setShowCircle] = useState(false);
   const [circleDirection, setCircleDirection] = useState<"clockwise" | "anticlockwise">("clockwise");
