@@ -101,11 +101,11 @@ const Navigation = ({ ambientEnabled, onAmbientToggle }: NavigationProps) => {
                       key={link.path}
                       to={link.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`text-base font-light tracking-wide transition-all duration-300 ${
-                        location.pathname === link.path
-                          ? "text-primary font-normal"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
+                      className="text-base font-light transition-all duration-300"
+                      style={{
+                        letterSpacing: "0.08em",
+                        color: location.pathname === link.path ? "#D4956A" : "hsl(var(--muted-foreground))",
+                      }}
                     >
                       {link.label}
                     </Link>
