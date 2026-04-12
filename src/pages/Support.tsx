@@ -1,18 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import PageLayout from "@/components/PageLayout";
 
 const Support = () => {
+  const widgetRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    if (!widgetRef.current) return;
+
     const script = document.createElement("script");
     script.src = "https://chaaiya.lovable.app/widget.js";
     script.setAttribute("data-username", "rohith");
     script.setAttribute("data-color", "#E85D26");
-    script.setAttribute("data-position", "right");
+    script.setAttribute("data-position", "inline");
     script.setAttribute("data-label", "☕ Buy me a chai");
-    document.body.appendChild(script);
+    widgetRef.current.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (widgetRef.current) {
+        widgetRef.current.innerHTML = "";
+      }
     };
   }, []);
 
@@ -55,6 +61,9 @@ const Support = () => {
         >
           Every small gesture helps us keep Turiya ad-free, accessible, and tranquil for all.
         </p>
+
+        {/* Chaaiya widget — centered inline */}
+        <div className="flex justify-center" ref={widgetRef} />
       </div>
     </PageLayout>
   );
