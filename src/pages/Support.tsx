@@ -1,38 +1,8 @@
-import { useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 
-const CHAAIYA_USERNAME = "rohith";
+const CHAAIYA_URL = "https://chaaiya.lovable.app/rohith";
 
 const Support = () => {
-  useEffect(() => {
-    // Load the widget script
-    const script = document.createElement("script");
-    script.src = "https://chaaiya.lovable.app/widget.js";
-    script.setAttribute("data-username", CHAAIYA_USERNAME);
-    script.setAttribute("data-color", "#E85D26");
-    script.setAttribute("data-position", "right");
-    script.setAttribute("data-label", "☕ Buy me a chai");
-    document.body.appendChild(script);
-
-    return () => {
-      // Remove the script
-      try { document.body.removeChild(script); } catch {}
-      // Remove any injected widget elements (iframes, divs, buttons, etc.)
-      document.querySelectorAll(
-        '[id*="chaaiya"], [class*="chaaiya"], [data-chaaiya], iframe[src*="chaaiya"]'
-      ).forEach((el) => el.remove());
-      // Also remove any fixed/absolute positioned elements the widget may have added
-      document.querySelectorAll('body > div, body > iframe, body > button').forEach((el) => {
-        const src = el.getAttribute('src') || '';
-        const id = el.getAttribute('id') || '';
-        const className = el.getAttribute('class') || '';
-        if (src.includes('chaaiya') || id.includes('chaaiya') || className.includes('chaaiya')) {
-          el.remove();
-        }
-      });
-    };
-  }, []);
-
   return (
     <PageLayout gradient="calm">
       <div className="w-full max-w-3xl mx-auto space-y-14 animate-fade-in">
@@ -73,20 +43,23 @@ const Support = () => {
           Every small gesture helps us keep Turiya ad-free, accessible, and tranquil for all.
         </p>
 
-        {/* Chaaiya profile embed — centered, only on this page */}
+        {/* Chaaiya CTA */}
         <div className="flex justify-center pb-8">
-          <iframe
-            src={`https://chaaiya.lovable.app/${CHAAIYA_USERNAME}`}
-            title="Support via Chaaiya"
-            className="rounded-2xl border-0"
+          <a
+            href={CHAAIYA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-light tracking-wide transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
             style={{
-              width: "100%",
-              maxWidth: "420px",
-              height: "520px",
-              border: "1px solid rgba(212, 149, 106, 0.2)",
+              background: "linear-gradient(135deg, rgba(212,149,106,0.15) 0%, rgba(212,149,106,0.08) 100%)",
+              border: "1px solid rgba(212, 149, 106, 0.25)",
+              color: "#5C4A32",
+              fontFamily: "'Lora', serif",
             }}
-            allow="payment"
-          />
+          >
+            <span className="text-xl">☕</span>
+            Buy me a chai
+          </a>
         </div>
       </div>
     </PageLayout>
