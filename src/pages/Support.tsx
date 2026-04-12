@@ -1,24 +1,35 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 
+const CHAAIYA_USERNAME = "rohith";
+
 const Support = () => {
-  const widgetRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    if (!widgetRef.current) return;
-
+    // Load the widget script
     const script = document.createElement("script");
     script.src = "https://chaaiya.lovable.app/widget.js";
-    script.setAttribute("data-username", "rohith");
+    script.setAttribute("data-username", CHAAIYA_USERNAME);
     script.setAttribute("data-color", "#E85D26");
-    script.setAttribute("data-position", "inline");
+    script.setAttribute("data-position", "right");
     script.setAttribute("data-label", "☕ Buy me a chai");
-    widgetRef.current.appendChild(script);
+    document.body.appendChild(script);
 
     return () => {
-      if (widgetRef.current) {
-        widgetRef.current.innerHTML = "";
-      }
+      // Remove the script
+      try { document.body.removeChild(script); } catch {}
+      // Remove any injected widget elements (iframes, divs, buttons, etc.)
+      document.querySelectorAll(
+        '[id*="chaaiya"], [class*="chaaiya"], [data-chaaiya], iframe[src*="chaaiya"]'
+      ).forEach((el) => el.remove());
+      // Also remove any fixed/absolute positioned elements the widget may have added
+      document.querySelectorAll('body > div, body > iframe, body > button').forEach((el) => {
+        const src = el.getAttribute('src') || '';
+        const id = el.getAttribute('id') || '';
+        const className = el.getAttribute('class') || '';
+        if (src.includes('chaaiya') || id.includes('chaaiya') || className.includes('chaaiya')) {
+          el.remove();
+        }
+      });
     };
   }, []);
 
@@ -62,8 +73,21 @@ const Support = () => {
           Every small gesture helps us keep Turiya ad-free, accessible, and tranquil for all.
         </p>
 
-        {/* Chaaiya widget — centered inline */}
-        <div className="flex justify-center" ref={widgetRef} />
+        {/* Chaaiya profile embed — centered, only on this page */}
+        <div className="flex justify-center pb-8">
+          <iframe
+            src={`https://chaaiya.lovable.app/${CHAAIYA_USERNAME}`}
+            title="Support via Chaaiya"
+            className="rounded-2xl border-0"
+            style={{
+              width: "100%",
+              maxWidth: "420px",
+              height: "520px",
+              border: "1px solid rgba(212, 149, 106, 0.2)",
+            }}
+            allow="payment"
+          />
+        </div>
       </div>
     </PageLayout>
   );
