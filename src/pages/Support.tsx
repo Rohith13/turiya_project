@@ -42,37 +42,20 @@ const Support = () => {
           Every small gesture helps us keep Turiya ad-free, accessible, and tranquil for all.
         </p>
 
-        {/* QR Cards */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-          {/* PhonePe */}
-          <div
-            className="flex flex-col items-center space-y-4 p-6 rounded-2xl"
-            style={{ border: "1px solid rgba(212, 149, 106, 0.2)" }}
+        {/* Chai support button */}
+        <div className="flex justify-center px-4">
+          <a
+            href="https://razorpay.me/@revoralabs"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-light tracking-[0.12em] uppercase text-foreground/90 transition-all duration-500 hover:scale-[1.03]"
+            style={{
+              border: "1px solid rgba(212, 149, 106, 0.35)",
+              background: "rgba(212, 149, 106, 0.08)",
+            }}
           >
-            <img
-              src={phonePeQR}
-              alt="PhonePe QR Code"
-              className="w-56 h-56 md:w-64 md:h-64 rounded-lg"
-            />
-            <p className="text-xs font-light tracking-[0.15em] uppercase text-muted-foreground/60">
-              PhonePe
-            </p>
-          </div>
-
-          {/* PayPal */}
-          <div
-            className="flex flex-col items-center space-y-4 p-6 rounded-2xl"
-            style={{ border: "1px solid rgba(212, 149, 106, 0.2)" }}
-          >
-            <img
-              src={payPalQR}
-              alt="PayPal QR Code"
-              className="w-56 h-56 md:w-64 md:h-64 rounded-lg"
-            />
-            <p className="text-xs font-light tracking-[0.15em] uppercase text-muted-foreground/60">
-              PayPal
-            </p>
-          </div>
+            ☕ Buy me a chai
+          </a>
         </div>
       </div>
     </PageLayout>
