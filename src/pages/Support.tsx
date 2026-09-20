@@ -1,13 +1,12 @@
 import PageLayout from "@/components/PageLayout";
 
-const CHAAIYA_URL = "https://chaaiya.lovable.app/rohith";
-
 const Support = () => {
   return (
     <PageLayout gradient="calm">
       <div className="w-full max-w-3xl mx-auto space-y-14 animate-fade-in">
         {/* Headline with ambient orb */}
         <div className="relative flex items-center justify-center py-8">
+          {/* Warm orb — static, candle-like */}
           <div
             className="absolute w-56 h-56 rounded-full"
             style={{
@@ -35,7 +34,7 @@ const Support = () => {
           </p>
         </div>
 
-        {/* Earning line */}
+        {/* Earning line — above QR cards */}
         <p
           className="text-sm md:text-base font-light italic text-center text-muted-foreground/70 px-4"
           style={{ fontFamily: "'Lora', serif" }}
@@ -43,22 +42,19 @@ const Support = () => {
           Every small gesture helps us keep Turiya ad-free, accessible, and tranquil for all.
         </p>
 
-        {/* Chaaiya CTA */}
-        <div className="flex justify-center pb-8">
+        {/* Chai support button */}
+        <div className="flex justify-center px-4">
           <a
-            href={CHAAIYA_URL}
+            href="https://razorpay.me/@revoralabs"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-light tracking-wide transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-light tracking-[0.12em] uppercase text-foreground/90 transition-all duration-500 hover:scale-[1.03]"
             style={{
-              background: "linear-gradient(135deg, rgba(212,149,106,0.15) 0%, rgba(212,149,106,0.08) 100%)",
-              border: "1px solid rgba(212, 149, 106, 0.25)",
-              color: "#5C4A32",
-              fontFamily: "'Lora', serif",
+              border: "1px solid rgba(212, 149, 106, 0.35)",
+              background: "rgba(212, 149, 106, 0.08)",
             }}
           >
-            <span className="text-xl">☕</span>
-            Buy me a chai
+            ☕ Buy me a chai
           </a>
         </div>
       </div>
