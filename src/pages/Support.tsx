@@ -1,6 +1,4 @@
 import PageLayout from "@/components/PageLayout";
-import phonePeQR from "@/assets/qr-phonepe.png";
-import payPalQR from "@/assets/qr-paypal.png";
 
 const Support = () => {
   return (
